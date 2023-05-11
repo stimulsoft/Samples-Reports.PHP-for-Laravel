@@ -8,6 +8,11 @@ This repository contains a standard Laravel web project with Report Viewer and R
 # Running samples
 The folder contains all the scripts and resources of the project. So all files from this folder must be copied to your PHP server, using FTP or HTTP access interface - depending on your hosting provider.
 
+Before copying the files, you need to create the `.env` configuration file for the Laravel application. You can copy the configuration template from the `.env.example` file, and make changes if necessary. On first launch, the Laravel application will ask you to generate a unique application key, which will be stored in the `.env` configuration file.
+
+To download all dependencies, please use the command:  
+`composer update`
+
 To run the project, please use the command:  
 `php artisan serve`
 
