@@ -1,11 +1,11 @@
 # PHP Laravel samples for Stimulsoft Reports.PHP
 
-#### This repository contains the source code of the examples of usage Stimulsoft Reports.PHP reporting tool in the PHP Laravel application, using HTML/PHP code and JavaScript components. The product is fully compatible with Laravel 8 and higher, uses Blade templates, and a controller to handle events.
+#### This repository contains the source code of the examples of usage Stimulsoft Reports.PHP reporting tool in the PHP Laravel application, using HTML/PHP code and JavaScript components. The report builder is fully compatible with Laravel 8 and higher, uses Blade templates, and a controller to handle events for embedding components.
 
-# Overview
+## Overview
 This repository contains a standard Laravel web project with Report Viewer and Report Designer components, as well as several sample reports.
 
-# Running samples
+## Running samples
 The folder contains all the scripts and resources of the project. So all files from this folder must be copied to your PHP server, using FTP or HTTP access interface - depending on your hosting provider.
 
 Before copying the files, you need to create the `.env` configuration file for the Laravel application. You can copy the configuration template from the `.env.example` file, and make changes if necessary. On first launch, the Laravel application will ask you to generate a unique application key, which will be stored in the `.env` configuration file.
@@ -21,7 +21,7 @@ http://127.0.0.1:8000/
 
 For more information, see the [documentation](https://laravel.com/docs) on working with Laravel framework.
 
-# Deployment
+## Deployment
 To add Stimulsoft components to your Laravel application, just follow a few simple steps.
 
 1. Add the Stimulsoft library dependency using the Composer manager:  
@@ -59,15 +59,13 @@ Route::any('/handler', [HandlerController::class, 'process']);
 
 6. Everything is ready, you can launch the application and work with Stimulsoft reports.
 
-# About Stimulsoft Reports.PHP
-Stimulsoft Reports.PHP is a reporting tool designed to create, edit and view reports in the Internet using a client-server technology. The PHP script works on the server side and controls the report generation. The JavaScript report engine works on the client side and provides a universal mechanism for reports generation almost on any client. Fast and powerful report engine, rich and intuitive interface, deployment and licensing.
+## About Stimulsoft Reports.PHP
+Stimulsoft Reports.PHP is a report generator intended to create, view, print, and export reports online using client-server technology. The Stimulsoft report generator for PHP is a fast and powerful report engine, rich and intuitive interface, simple integration and deployment process, and an easy and understandable licensing model.
 
-[Live Demo](http://demo.stimulsoft.com/#Js)
-
-[Product Page](https://www.stimulsoft.com/en/products/reports-php)
-
-[Package Repository](https://packagist.org/packages/stimulsoft/reports-php)
-
-[Free Download](https://www.stimulsoft.com/en/downloads)
-
-[License](LICENSE.md)
+## Useful links
+* [Live Demo](http://demo.stimulsoft.com/#Js)
+* [Product Page](https://www.stimulsoft.com/en/products/reports-php)
+* [Composer Package](https://packagist.org/packages/stimulsoft/reports-php)
+* [Free Download](https://www.stimulsoft.com/en/downloads)
+* [Documentation](https://www.stimulsoft.com/en/documentation/online/programming-manual/index.html?reports_and_dashboards_for_php.htm)
+* [License](LICENSE.md)
