@@ -28,26 +28,22 @@ To add Stimulsoft components to your Laravel application, just follow a few simp
 ```
 composer require stimulsoft/reports-php
 ```
-   
-
+  
 2. Add Stimulsoft service provider to app.php file:  
 ```php
 Stimulsoft\Laravel\StiServiceProvider::class
 ```
-   
-
+  
 3. Add the Blade component template to the application resources, for example:  
 ```
 viewer.blade.php
 ```
-   
-
+  
 4. Add a component controller and set the necessary methods for event handling in it, for example:  
 ```
 HandlerController.php
 ```
-   
-
+  
 5. Add the necessary routes to the created view and controller in the web.php file, for example:
 ```php
 Route::get('/viewer', function () {
@@ -56,7 +52,7 @@ Route::get('/viewer', function () {
 
 Route::any('/handler', [HandlerController::class, 'process']);
 ```
-
+  
 6. Everything is ready, you can launch the application and work with Stimulsoft reports.
 
 ## About Stimulsoft Reports.PHP
