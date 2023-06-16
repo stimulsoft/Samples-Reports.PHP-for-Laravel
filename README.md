@@ -3,7 +3,7 @@
 #### This repository contains the source code of the examples of usage Stimulsoft Reports.PHP reporting tool in the PHP Laravel application, using HTML/PHP code and JavaScript components. The report builder is fully compatible with Laravel 8 and higher, uses Blade templates, and a controller to handle events for embedding components.
 
 ## Overview
-This repository contains a standard Laravel web project with Report Viewer and Report Designer components, as well as several sample reports.
+This repository has a standard Laravel web project with Report Viewer and Report Designer components, as well as several sample reports.
 
 ## Running samples
 The folder contains all the scripts and resources of the project. So all files from this folder must be copied to your PHP server, using FTP or HTTP access interface - depending on your hosting provider.
@@ -63,5 +63,5 @@ Stimulsoft Reports.PHP is a report generator intended to create, view, print, an
 * [Product Page](https://www.stimulsoft.com/en/products/reports-php)
 * [Composer Package](https://packagist.org/packages/stimulsoft/reports-php)
 * [Free Download](https://www.stimulsoft.com/en/downloads)
-* [Documentation](https://www.stimulsoft.com/en/documentation/online/programming-manual/index.html?reports_and_dashboards_for_php.htm)
+* [Documentation](https://www.stimulsoft.com/en/documentation/online/programming-manual/reports_and_dashboards_for_php.htm)
 * [License](LICENSE.md)
