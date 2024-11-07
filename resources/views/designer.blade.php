@@ -1,10 +1,16 @@
 <?php
+
 use Stimulsoft\Designer\StiDesigner;
 use Stimulsoft\Report\StiReport;
 
 
 // Creating a designer object
 $designer = new StiDesigner();
+
+// Redirect events to the handler controller
+// It is also necessary to specify which component events will be processed
+$designer->handler->url = "/handler";
+$designer->onSaveReport = true;
 
 // Processing the request and, if successful, immediately printing the result
 $designer->process();

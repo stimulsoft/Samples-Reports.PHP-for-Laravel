@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Routing\Controller as BaseController;
-use Stimulsoft\StiDataEventArgs;
-use Stimulsoft\StiExportEventArgs;
+use Stimulsoft\Events\StiDataEventArgs;
+use Stimulsoft\Events\StiEmailEventArgs;
+use Stimulsoft\Events\StiExportEventArgs;
+use Stimulsoft\Events\StiPrintEventArgs;
+use Stimulsoft\Events\StiVariablesEventArgs;
+use Stimulsoft\Events\StiReportEventArgs;
 use Stimulsoft\StiHandler;
-use Stimulsoft\StiReportEventArgs;
 use Stimulsoft\StiResult;
-use Stimulsoft\StiVariablesEventArgs;
+
 
 class HandlerController extends BaseController
 {
@@ -26,13 +29,14 @@ class HandlerController extends BaseController
         $handler->onSaveReport = array($this, 'onSaveReport');
         $handler->onSaveAsReport = array($this, 'onSaveAsReport');
 
-        $handler->process();
+        $handler->process(true);
     }
 
-    public function onPrepareVariables(StiVariablesEventArgs $args): StiResult
+    public function onPrepareVariables(StiVariablesEventArgs $args)
     {
-        // You can change the values of the variables used in the report.
-        // The new values will be passed to the report generator.
+        // You can set the values of the report variables, the value types must match the original types
+        // If the variable contained an expression, the already calculated value will be passed
+        // The new values will be passed to the report generator
         /*
         $args->variables['VariableString']->value = 'Value from Server-Side';
         $args->variables['VariableDateTime']->value = '2020-01-31 22:00:00';
@@ -46,7 +50,7 @@ class HandlerController extends BaseController
         $args->variables['NewVariable'] = ['value' => 'New Value'];
         */
 
-        // Values for 'Variables.mrt' report template.
+        // Changing variables with the required values
         if (count($args->variables) > 0) {
             $args->variables['Name']->value = 'Maria';
             $args->variables['Surname']->value = 'Anders';
@@ -55,12 +59,29 @@ class HandlerController extends BaseController
             $args->variables['Sex']->value = false;
             $args->variables['BirthDay']->value = '1982-03-20 00:00:00';
         }
-
-        return StiResult::success();
     }
 
+    // In this event, it is possible to handle the data request, and replace the connection parameters
     public function onBeginProcessData(StiDataEventArgs $args): StiResult
     {
+        // You can change the connection string
+        // This example uses the 'Northwind' SQL database, it is located in the 'Data' folder
+        // You need to import it and correct the connection string to your database
+        if ($args->connection == 'MyConnectionName')
+            $args->connectionString = 'Server=localhost; Database=northwind; UserId=root; Pwd=;';
+
+        // You can change the SQL query
+        if ($args->dataSource == 'MyDataSource')
+            $args->queryString = 'SELECT * FROM MyTable';
+
+        // You can change the SQL query parameters with the required values
+        // For example: SELECT * FROM @Parameter1 WHERE Id = @Parameter2 AND Date > @Parameter3
+        if ($args->dataSource == 'MyDataSourceWithParams') {
+            $args->parameters['Parameter1']->value = 'TableName';
+            $args->parameters['Parameter2']->value = 10;
+            $args->parameters['Parameter3']->value = '2019-01-20';
+        }
+
         // You can change the connection string.
         /*
         if ($args->connection == 'MyConnectionName')
@@ -84,91 +105,97 @@ class HandlerController extends BaseController
         */
 
         // Values for 'SimpleListSQLParameters.mrt' report template.
-        if ($args->dataSource == 'customers') {
-            $args->parameters['Country']->value = "Germany";
+        if ($args->dataSource == 'customers' && count($args->parameters) > 0) {
+            $args->parameters['Country']->value = 'Germany';
         }
 
-        // You can send a successful result.
-        return StiResult::success();
-        // You can send an informational message.
-        //return StiResult::success('Some warning or other useful information.');
+        // If required, it is possible to show a message about success or some error
+        //return StiResult::getSuccess('Connection to the server was successful.');
         // You can send an error message.
-        //return StiResult::error('Message about any connection error.');
+        //return StiResult::getError('An error occurred while connecting to the server.');
+
+        return StiResult::getSuccess();
     }
 
-    public function onEndProcessData(StiDataEventArgs $args): StiResult
+    public function onEndProcessData(StiDataEventArgs $args)
     {
-        return StiResult::success();
+
     }
 
-    public function onPrintReport(StiExportEventArgs $args): StiResult
+    public function onPrintReport(StiPrintEventArgs $args)
     {
-        return StiResult::success();
+
     }
 
-    public function onBeginExportReport(StiExportEventArgs $args): StiResult
+    public function onBeginExportReport(StiExportEventArgs $args)
     {
-        return StiResult::success();
+
     }
 
     public function onEndExportReport(StiExportEventArgs $args): StiResult
     {
-        // Getting the file name with the extension.
-        $reportName = $args->fileName . '.' . $args->fileExtension;
+        // Getting the file name with the extension
+        $reportName = $args->fileName;
+        if (substr($reportName, -strlen($args->fileExtension) - 1) !== '.' . $args->fileExtension)
+            $reportName .= '.' . $args->fileExtension;
 
-        // By default, the exported file is saved to the 'reports' folder.
-        // You can change this behavior if required.
-        file_put_contents('reports/' . $reportName, base64_decode($args->data));
+        // Saving the exported file in the 'reports' folder
+        $reportPath = "reports/$reportName";
+        file_put_contents($reportPath, base64_decode($args->data));
 
-        //return StiResult::success();
-        return StiResult::success("The exported report is saved successfully as $reportName");
-        //return StiResult::error('An error occurred while exporting the report.');
+        // If required, it is possible to show a message about success or some error
+        return StiResult::getSuccess("The exported report has been successfully saved to '$reportPath' file.");
+        //return StiResult::getError('An error occurred while exporting the report.');
     }
 
-    public function onEmailReport(StiExportEventArgs $args): StiResult
+    public function onEmailReport(StiEmailEventArgs $args): StiResult
     {
-        // These parameters will be used when sending the report by email. You must set the correct values.
-        $args->emailSettings->from = '*****@gmail.com';
-        $args->emailSettings->host = 'smtp.google.com';
-        $args->emailSettings->login = '*****';
-        $args->emailSettings->password = '*****';
+        // Defining the required options for sending (host, login, password), they will not be passed to the client side
+        $args->settings->from = 'mail.sender@stimulsoft.com';
+        $args->settings->host = 'smtp.stimulsoft.com';
+        $args->settings->login = '********';
+        $args->settings->password = '********';
 
-        // These parameters are optional.
-        //$args->emailSettings->name = 'John Smith';
-        //$args->emailSettings->port = 465;
-        //$args->emailSettings->cc[] = 'copy1@gmail.com';
-        //$args->emailSettings->bcc[] = 'copy2@gmail.com';
-        //$args->emailSettings->bcc[] = 'copy3@gmail.com John Smith';
+        // These parameters are optional
+        //$args->settings->name = 'John Smith';
+        //$args->settings->port = 465;
+        //$args->settings->secure = 'ssl';
+        //$args->settings->cc[] = 'copy1@stimulsoft.com';
+        //$args->settings->bcc[] = 'copy2@stimulsoft.com';
+        //$args->settings->bcc[] = 'copy3@stimulsoft.com John Smith';
 
-        return StiResult::success('Email sent successfully.');
+        // You can return a message about the successful sending of an email
+        // If the message is not required, do not return the result
+        // If an error occurred while sending an email, a message from the email sending module will be displayed
+        return StiResult::getSuccess('The Email has been sent successfully.');
     }
 
-    public function onCreateReport(StiReportEventArgs $args): StiResult
+    public function onCreateReport(StiReportEventArgs $args)
     {
         // You can load a new report and send it to the designer.
         //$args->report = file_get_contents('reports/SimpleList.mrt');
-
-        return StiResult::success();
     }
 
     public function onSaveReport(StiReportEventArgs $args): StiResult
     {
-        // Getting the correct file name of the report template.
+        // Getting the correct file name of the report template
         $reportFileName = strlen($args->fileName) > 0 ? $args->fileName : 'Report.mrt';
         if (strlen($reportFileName) < 5 || substr($reportFileName, -4) !== '.mrt')
             $reportFileName .= '.mrt';
 
-        // For example, you can save a report to the 'reports' folder on the server-side.
-        file_put_contents('reports/' . $reportFileName, $args->reportJson);
+        // Saving the report file in the 'reports' folder on the server-side
+        $reportPath = "reports/$reportFileName";
+        $result = file_put_contents($reportPath, $args->getReportJson());
 
-        //return StiResult::success();
-        return StiResult::success('Report file saved successfully as ' . $args->fileName);
-        //return StiResult::error('An error occurred while saving the report file on the server side.');
+        // If required, it is possible to show a message about success or some error
+        if ($result === false)
+            return StiResult::getError('An error occurred while saving the report file on the server side.');
+        return StiResult::getSuccess("The report has been successfully saved to '$reportPath' file.");
+        //return StiResult::getSuccess();
     }
 
-    public function onSaveAsReport(StiReportEventArgs $args): StiResult
+    public function onSaveAsReport(StiReportEventArgs $args)
     {
         // This event works the same as the 'onSaveReport' event.
-        return StiResult::success();
     }
 }
