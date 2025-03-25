@@ -116,7 +116,7 @@
                                 </span>
                             </span>
                             <span>
-                                Show Report in
+                                Show the Report in
                                 <a href="/viewer" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
                                     <span>Stimulsoft Viewer</span>
                                     <svg
@@ -143,7 +143,7 @@
                                 </span>
                             </span>
                             <span>
-                                Edit Report in
+                                Edit the Report in
                                 <a href="/designer" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
                                     <span>Stimulsoft Designer</span>
                                     <svg

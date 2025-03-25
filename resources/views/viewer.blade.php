@@ -10,8 +10,6 @@ $viewer = new StiViewer();
 // Redirect events to the handler controller
 // It is also necessary to specify which component events will be processed
 $viewer->handler->url = "/handler";
-$viewer->handler->encryptData = false;
-$viewer->javascript->useRelativeUrls = false;
 $viewer->onPrepareVariables = true;
 
 // Creating a report object
