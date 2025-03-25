@@ -22,30 +22,32 @@ http://127.0.0.1:8000/
 For more information, see the [documentation](https://laravel.com/docs) on working with Laravel framework.
 
 ## Deployment
-To add Stimulsoft components to your Laravel application, just follow a few simple steps.
+To add Stimulsoft components to your Laravel application, just follow a few simple steps. The instructions have been tested on the Laravel 12 starter project. To run the current project with an example, you can proceed to step 6, since the Stimulsoft components are already installed.  
 
 1. Add the Stimulsoft library dependency using the Composer manager:  
 ```
 composer require stimulsoft/reports-php
 ```
   
-2. Add Stimulsoft service provider to app.php file:  
+2. Add Stimulsoft service provider to the `\bootstrap\providers.php` file:  
 ```php
 Stimulsoft\Laravel\StiServiceProvider::class
 ```
   
-3. Add the Blade component template to the application resources, for example:  
+3. Add the Blade component template, for example:  
 ```
-viewer.blade.php
-```
-  
-4. Add a component controller and set the necessary methods for event handling in it, for example:  
-```
-HandlerController.php
+\resources\views\viewer.blade.php
 ```
   
-5. Add the necessary routes to the created view and controller in the web.php file, for example:
+4. Add the component controller and set the necessary events, for example:  
+```
+\app\Http\Controllers\HandlerController.php
+```
+  
+5. Add the necessary routes to the Blade template and controller in the `\routes\web.php` file:  
 ```php
+use App\Http\Controllers\HandlerController;
+
 Route::get('/viewer', function () {
     return view('viewer');
 });
@@ -53,7 +55,17 @@ Route::get('/viewer', function () {
 Route::any('/handler', [HandlerController::class, 'process']);
 ```
   
-6. Everything is ready, you can launch the application and work with Stimulsoft reports.
+6. Finally, it is necessary to install the used Composer and Node.js packages:  
+```php
+composer install
+npm install
+npm run build
+```
+  
+7. Everything is ready, you can launch the application and work with Stimulsoft reports:  
+```php
+composer run dev
+```
 
 ## About Stimulsoft Reports.PHP
 Stimulsoft Reports.PHP is a report generator intended to create, view, print, and export reports online using client-server technology. The Stimulsoft report generator for PHP is a fast and powerful report engine, rich and intuitive interface, simple integration and deployment process, and an easy and understandable licensing model.

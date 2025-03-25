@@ -18,18 +18,24 @@ class HandlerController extends BaseController
     public function process()
     {
         $handler = new StiHandler();
-        $handler->onPrepareVariables = array($this, 'onPrepareVariables');
-        $handler->onBeginProcessData = array($this, 'onBeginProcessData');
-        $handler->onEndProcessData = array($this, 'onEndProcessData');
-        $handler->onPrintReport = array($this, 'onPrintReport');
-        $handler->onBeginExportReport = array($this, 'onBeginExportReport');
-        $handler->onEndExportReport = array($this, 'onEndExportReport');
-        $handler->onEmailReport = array($this, 'onEmailReport');
-        $handler->onCreateReport = array($this, 'onCreateReport');
-        $handler->onSaveReport = array($this, 'onSaveReport');
-        $handler->onSaveAsReport = array($this, 'onSaveAsReport');
+        $handler->onBeforeRender = [$this, 'onBeforeRender'];
+        $handler->onPrepareVariables = [$this, 'onPrepareVariables'];
+        $handler->onBeginProcessData = [$this, 'onBeginProcessData'];
+        $handler->onEndProcessData = [$this, 'onEndProcessData'];
+        $handler->onPrintReport = [$this, 'onPrintReport'];
+        $handler->onBeginExportReport = [$this, 'onBeginExportReport'];
+        $handler->onEndExportReport = [$this, 'onEndExportReport'];
+        $handler->onEmailReport = [$this, 'onEmailReport'];
+        $handler->onCreateReport = [$this, 'onCreateReport'];
+        $handler->onSaveReport = [$this, 'onSaveReport'];
+        $handler->onSaveAsReport = [$this, 'onSaveAsReport'];
 
         $handler->process(true);
+    }
+
+    public function onBeforeRender(StiReportEventArgs $args)
+    {
+
     }
 
     public function onPrepareVariables(StiVariablesEventArgs $args)
@@ -62,7 +68,7 @@ class HandlerController extends BaseController
     }
 
     // In this event, it is possible to handle the data request, and replace the connection parameters
-    public function onBeginProcessData(StiDataEventArgs $args): StiResult
+    public function onBeginProcessData(StiDataEventArgs $args)
     {
         // You can change the connection string
         // This example uses the 'Northwind' SQL database, it is located in the 'Data' folder
@@ -114,7 +120,7 @@ class HandlerController extends BaseController
         // You can send an error message.
         //return StiResult::getError('An error occurred while connecting to the server.');
 
-        return StiResult::getSuccess();
+        //$args->parameters['Country']->value = 1234;
     }
 
     public function onEndProcessData(StiDataEventArgs $args)
@@ -132,7 +138,7 @@ class HandlerController extends BaseController
 
     }
 
-    public function onEndExportReport(StiExportEventArgs $args): StiResult
+    public function onEndExportReport(StiExportEventArgs $args)
     {
         // Getting the file name with the extension
         $reportName = $args->fileName;
@@ -144,11 +150,11 @@ class HandlerController extends BaseController
         file_put_contents($reportPath, base64_decode($args->data));
 
         // If required, it is possible to show a message about success or some error
-        return StiResult::getSuccess("The exported report has been successfully saved to '$reportPath' file.");
+        //return StiResult::getSuccess("The exported report has been successfully saved to '$reportPath' file.");
         //return StiResult::getError('An error occurred while exporting the report.');
     }
 
-    public function onEmailReport(StiEmailEventArgs $args): StiResult
+    public function onEmailReport(StiEmailEventArgs $args)
     {
         // Defining the required options for sending (host, login, password), they will not be passed to the client side
         $args->settings->from = 'mail.sender@stimulsoft.com';
@@ -176,7 +182,7 @@ class HandlerController extends BaseController
         //$args->report = file_get_contents('reports/SimpleList.mrt');
     }
 
-    public function onSaveReport(StiReportEventArgs $args): StiResult
+    public function onSaveReport(StiReportEventArgs $args)
     {
         // Getting the correct file name of the report template
         $reportFileName = strlen($args->fileName) > 0 ? $args->fileName : 'Report.mrt';

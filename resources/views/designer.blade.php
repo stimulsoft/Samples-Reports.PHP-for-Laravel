@@ -12,16 +12,13 @@ $designer = new StiDesigner();
 $designer->handler->url = "/handler";
 $designer->onSaveReport = true;
 
-// Processing the request and, if successful, immediately printing the result
-$designer->process();
-
 // Creating a report object
 $report = new StiReport();
 
 // Loading a report by URL
 // This method does not load the report object on the server side, it only generates the necessary JavaScript code
 // The report will be loaded into a JavaScript object on the client side
-$report->loadFile('reports/SimpleList.mrt');
+$report->loadFile("reports/SimpleList.mrt");
 
 // Assigning a report object to the designer
 $designer->report = $report;
